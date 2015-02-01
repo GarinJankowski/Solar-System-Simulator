@@ -24,7 +24,7 @@ public class Star {
 	String debug;
 	GLabel label;
 	
-	
+	//default star
 	public Star(int x,int y){
 		display = false;
 		circle = new GOval(x,y,3,3);
@@ -55,7 +55,7 @@ public class Star {
 		double yc = (-space.maxcy/space.maxpy)*position.yp + space.maxcy;
 		
 		if(space.track.isSelected()){
-			GOval trackcircle = new GOval(xc,yc,2,2);
+			GOval trackcircle = new GOval(xc,yc,.2,.2);
 			trackcircle.setColor(Color.red);
 			space.add(trackcircle);
 		}
