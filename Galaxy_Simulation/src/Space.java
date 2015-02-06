@@ -7,11 +7,13 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 import acm.util.RandomGenerator;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JSlider;
 /**
  * 
@@ -67,12 +69,20 @@ public class Space extends GraphicsProgram{
 	GLabel debugLabel4 = new GLabel("debug");
 	//speed of light
 	public double c = 3e8;
+	//cycle controller
+	boolean cycle = false;
 	//toggle buttons
 	JCheckBox info = new JCheckBox("Info");
 	JCheckBox track = new JCheckBox("Tracker");
 	JCheckBox initV = new JCheckBox("Randomize Initial Velocity");
-	//slider
-	JSlider times = new JSlider(JSlider.HORIZONTAL,5,200,30);
+	JCheckBox limit = new JCheckBox("Limit Planet Position");
+	//sliders
+	JSlider times = new JSlider(JSlider.VERTICAL,1,4,2);
+	JSlider planetiv = new JSlider(JSlider.HORIZONTAL,-30,30,0);
+	JSlider stariv = new JSlider(JSlider.HORIZONTAL,0,7,0);
+	JSlider planetia = new JSlider(JSlider.HORIZONTAL,-30,30,0);
+	
+	
 	//random number generators
 	double rangle;
 	double rdistance;
@@ -88,11 +98,13 @@ public class Space extends GraphicsProgram{
 	}
 	//initialize
 	public void init(){
+		setTitle("Solar System Simulator");
 		//background color
-		setBackground(Color.BLACK);
+		setBackground(Color.WHITE);
 		//buttons
 		add(new JButton("Start"),SOUTH);
 		add(new JButton("Stop"),SOUTH);
+		add(new JButton("Run"),SOUTH);
 		add(new JButton("New Solar System"),SOUTH);
 		add(new JButton("Single Planet Orbit"),SOUTH);
 		add(new JButton("New Galaxy"),SOUTH);
@@ -106,16 +118,46 @@ public class Space extends GraphicsProgram{
 		track.setSelected(false);
 		
 		add(initV,EAST);
-		initV.setSelected(true);
+		initV.setSelected(false);
+		
+		add(limit,EAST);
+		limit.setSelected(false);
 		
 		//slider
 		
+		planetiv.setPreferredSize(new Dimension(400,50));
+		planetiv.setMajorTickSpacing(15);
+		planetiv.setPaintTicks(true);
+		planetiv.setPaintLabels(true);
+		planetiv.setName("Magnitude");
+		add(planetiv,NORTH);
+		
+		planetia.setPreferredSize(new Dimension(400,50));
+		planetia.setMajorTickSpacing(15);
+		planetia.setPaintTicks(true);
+		planetia.setPaintLabels(true);
+		planetia.setName("Angle");
+		add(planetia,NORTH);
+		
+		stariv.setPreferredSize(new Dimension(400,50));
+		stariv.setMajorTickSpacing(1);
+		stariv.setPaintTicks(true);
+		stariv.setPaintLabels(true);
+		stariv.setName("Star Velocity");
+		add(stariv,NORTH);
+		
 		times.setPreferredSize(new Dimension(400,50));
-		times.setMajorTickSpacing(20);
-		times.setMinorTickSpacing(5);
+		times.setMajorTickSpacing(1);
 		times.setPaintTicks(true);
-		times.setPaintLabels(true);
-		add(times,NORTH);
+		times.setPaintLabels(true);		
+		add(times,WEST);
+		
+		Hashtable ttable = new Hashtable();
+		ttable.put( new Integer(4), new JLabel("10000") );
+		ttable.put( new Integer(3), new JLabel("1000") );
+		ttable.put( new Integer(2), new JLabel("100") );
+		ttable.put( new Integer(1), new JLabel("10") );
+		times.setLabelTable(ttable);
 		
 		addActionListeners();
 		
@@ -155,6 +197,15 @@ public class Space extends GraphicsProgram{
 	    	  go = false;
 	    	  
 	      }
+	      else if(command.equals("Run")){
+	    	  go = false;
+	    	  removeAll();
+	    	  undisplayAll();
+	    	  cycle = true;
+	    	  initializeRandomSS();
+	    	  go = true;
+	    	  
+	      }
 	      else if(command.equals("New Solar System")){
 	    	  go = false;
 	    	  removeAll();
@@ -181,8 +232,7 @@ public class Space extends GraphicsProgram{
 	    	  removeAll();
 	    	  undisplayAll();
 	    	  
-	      }
-	  
+	      }  
 	}
 	
 	private void undisplayAll() {
@@ -194,31 +244,54 @@ public class Space extends GraphicsProgram{
 	}
 	//sets up basic one-planet orbit
 	public void initialize(){
-		deltaT = 50000;
-		maxpx = 40e10;
-		maxpy = 40e10;
+		deltaT = Math.pow(10,times.getValue());
+		maxpx = 20e10;
+		maxpy = 20e10;
+		
+		int getVal = stariv.getValue();
+		int getVal2 = planetiv.getValue();
+		int getVal3 = planetia.getValue();
+		
+		rdistance = 1.496e10;
+		rangle = Math.PI/2;
+		
+		gdx = rdistance*(Math.cos(rangle));
+		gdy = rdistance*(Math.sin(rangle));
+		
+		
 		
 		//time
 		time = 0;
 		//sun
 		stars[0].turnOn();
-		stars[0].setPosition(20e10, 20e10);
-		stars[0].setVelocity(0,0);
+		stars[0].setPosition(maxpx/2, maxpy/2);
+		stars[0].setVelocity(1*Math.pow(10,getVal),0);
 		stars[0].mass = 2e30;
 		stars[0].trueStar(this);
+		stars[0].circle.setColor(Color.BLACK);
 		add(stars[0].circle);
+		
+		double vm = (Math.sqrt(G*(stars[0].mass)/rdistance))*(1+((double)getVal2/100));
+		double theta = (Math.PI/2+rangle)*(1+((double)getVal3/100));
+		 
+		//setting initial velocity
+		 
+		 double sxv = vm*Math.cos(theta);
+		 double syv = vm*Math.sin(theta);
 		
 		//earth
 		stars[1].turnOn();
-		stars[1].setPosition(2.8e11,3.3e11);
+		stars[1].setPosition(maxpx/2 + gdx,maxpy/2 + gdy);
 		//stars[1].setVelocity(0, 0);
-		stars[1].setVelocity(-2.88e4,1.55e4);
+		stars[1].setVelocity(sxv,syv);
+		//stars[1].setVelocity(-2.88e4,1.55e4);
 		//stars[1].setVelocity(-1.5e4,0.8e4);
 		//stars[1].setVelocity(-1.e4,0.6e4);
 		//stars[1].setVelocity(-0.7e4,0.4e4);
 		//stars[1].setVelocity(-0.4e4,0.3e4);
 		stars[1].mass = 6e24;
 		stars[1].trueStar(this);
+		stars[1].circle.setColor(Color.BLACK);
 		add(stars[1].circle);
 		
 
@@ -230,7 +303,7 @@ public class Space extends GraphicsProgram{
 		
 		maxpx = 5.2e20*50;
 		maxpy = 5.2e20*50;
-		deltaT = 5e11;
+		deltaT =  Math.pow(10,times.getValue());
 		
 		//first supermassive black hole
 		stars[0].turnOn();
@@ -254,7 +327,7 @@ public class Space extends GraphicsProgram{
 		for(int i=1;i<numStars/2;i++){
 			
 			//random distance, nagle, and mass
-			rdistance = (double)(Math.random()*5.2e20);
+			rdistance = (double)(Math.random()*4.2e20);
 			rangle = (double)(Math.random()*2*(Math.PI));
 			massRan = (double)(Math.random()*maxMassRan);
 			
@@ -304,20 +377,18 @@ public class Space extends GraphicsProgram{
 	}
 	//creates a random solar system formation
 	public void initializeRandomSS(){
-		
 		//changes number of stars in the array
 		final int numStars =  10;
-		
+		int getVal = stariv.getValue();
 		maxpx = 2e10;
 		maxpy = 2e10;
-		deltaT = 30;
+		deltaT =  Math.pow(10,times.getValue());
 		//maxMassRan = (2.1e30-2e30)/(numStars/2-1);
 		
 		//center star
 		stars[0].turnOn();
 		stars[0].setPosition(maxpx/2,maxpy/2);
-		stars[0].setVelocity(0,0);
-		//stars[0].setVelocity(1e5,0);
+		stars[0].setVelocity(1*Math.pow(10,getVal),0);
 		stars[0].mass = 2e30;
 		stars[0].trueStar(this);
 		stars[0].circle.setColor(Color.YELLOW);
@@ -328,8 +399,11 @@ public class Space extends GraphicsProgram{
 		for(int i=1;i<numStars;i++){
 			
 			rdistance = (double)(Math.random()*4.5e9);
+			if(limit.isSelected()){
+				rdistance = (double)(Math.random()*3.4e9)+1e9;
+			}
 			rangle = (double)(Math.random()*2*(Math.PI));
-			massRan = (double)(Math.random()*1e26);
+			massRan = (double)(Math.random()*2e27)+3.285e23;
 			
 			 gdx = rdistance*(Math.cos(rangle));
 			 gdy = rdistance*(Math.sin(rangle));
@@ -360,10 +434,11 @@ public class Space extends GraphicsProgram{
 		   	  add(stars[i].circle);
 		}
 	}
-	
 	//main loop
 	public void run(){
 		double debugLabelY;
+		long starttime = System.currentTimeMillis();
+		long dif;
 		 while(true){
 			 if(go){
 				 debugLabelY = 10;
@@ -393,8 +468,22 @@ public class Space extends GraphicsProgram{
 						 }
 					 }
 				 }
+				 if(cycle == true){
+				 long time = System.currentTimeMillis();
+				 dif = time-starttime;
+				 if(time-starttime > 60000){
+					 go = false;
+			    	  removeAll();
+			    	  undisplayAll();
+			    	  starttime = System.currentTimeMillis();
+			    	  initializeRandomSS();
+			    	  go = true;
+				 }
+				 }
+
 			 }
 			 pause(1);
+			
    	  	}
 	}
 }
