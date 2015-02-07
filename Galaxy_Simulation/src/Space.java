@@ -67,6 +67,7 @@ public class Space extends GraphicsProgram{
 	GLabel debugLabel2 = new GLabel("debug");
 	GLabel debugLabel3 = new GLabel("debug");
 	GLabel debugLabel4 = new GLabel("debug");
+	GLabel debugLabel5 = new GLabel("debug");
 	//speed of light
 	public double c = 3e8;
 	//cycle controller
@@ -204,7 +205,12 @@ public class Space extends GraphicsProgram{
 	    	  cycle = true;
 	    	  initializeRandomSS();
 	    	  go = true;
-	    	  
+	    	  deltaT = 10;
+	    	  add(debugLabel5);
+	    	  debugLabel5.setLabel("Solar System Simulation    Running automatically     Please do not touch");
+	    	  debugLabel5.setLocation(200, 200);
+	    	  debugLabel5.setFont("Helvetica-24");
+	    	  debugLabel5.setColor(Color.YELLOW);
 	      }
 	      else if(command.equals("New Solar System")){
 	    	  go = false;
@@ -486,6 +492,13 @@ public class Space extends GraphicsProgram{
 			    	  starttime = System.currentTimeMillis();
 			    	  initializeRandomSS();
 			    	  go = true;
+			    	  deltaT = 10;
+			    	  add(debugLabel5);
+			    	  debugLabel5.setLabel("Solar System Simulation    Running automatically     Please do not touch");
+			    	  debugLabel5.setLocation(200, 200);
+			    	  debugLabel5.setFont("Helvetica-24");
+			    	  debugLabel5.setColor(Color.YELLOW);
+			    	  
 				 }
 				 }
 
