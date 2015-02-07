@@ -55,7 +55,7 @@ public class Star {
 		double yc = (-space.maxcy/space.maxpy)*position.yp + space.maxcy;
 		
 		if(space.track.isSelected()){
-			GOval trackcircle = new GOval(xc,yc,.2,.2);
+			GOval trackcircle = new GOval(xc,yc,.5,.5);
 			trackcircle.setColor(Color.red);
 			space.add(trackcircle);
 		}

@@ -100,7 +100,7 @@ public class Space extends GraphicsProgram{
 	public void init(){
 		setTitle("Solar System Simulator");
 		//background color
-		setBackground(Color.WHITE);
+		setBackground(Color.BLACK);
 		//buttons
 		add(new JButton("Start"),SOUTH);
 		add(new JButton("Stop"),SOUTH);
@@ -248,6 +248,7 @@ public class Space extends GraphicsProgram{
 		maxpx = 20e10;
 		maxpy = 20e10;
 		
+		//get values from sliders
 		int getVal = stariv.getValue();
 		int getVal2 = planetiv.getValue();
 		int getVal3 = planetia.getValue();
@@ -255,6 +256,7 @@ public class Space extends GraphicsProgram{
 		rdistance = 1.496e10;
 		rangle = Math.PI/2;
 		
+		//calculate xa nd y from distance and angle
 		gdx = rdistance*(Math.cos(rangle));
 		gdy = rdistance*(Math.sin(rangle));
 		
@@ -268,9 +270,10 @@ public class Space extends GraphicsProgram{
 		stars[0].setVelocity(1*Math.pow(10,getVal),0);
 		stars[0].mass = 2e30;
 		stars[0].trueStar(this);
-		stars[0].circle.setColor(Color.BLACK);
+		stars[0].circle.setColor(Color.YELLOW);
 		add(stars[0].circle);
 		
+		//magnitude and angle
 		double vm = (Math.sqrt(G*(stars[0].mass)/rdistance))*(1+((double)getVal2/100));
 		double theta = (Math.PI/2+rangle)*(1+((double)getVal3/100));
 		 
@@ -291,7 +294,7 @@ public class Space extends GraphicsProgram{
 		//stars[1].setVelocity(-0.4e4,0.3e4);
 		stars[1].mass = 6e24;
 		stars[1].trueStar(this);
-		stars[1].circle.setColor(Color.BLACK);
+		stars[1].circle.setColor(Color.CYAN);
 		add(stars[1].circle);
 		
 
@@ -299,10 +302,13 @@ public class Space extends GraphicsProgram{
 	//creates two random galaxy formations
 	public void initializeRandomG(){
 
+		//numbers of stars in array
 		final int numStars = 100;
 		
+		//sets screen size in physics world
 		maxpx = 5.2e20*50;
 		maxpy = 5.2e20*50;
+		//sets time scale
 		deltaT =  Math.pow(10,times.getValue());
 		
 		//first supermassive black hole
@@ -354,10 +360,12 @@ public class Space extends GraphicsProgram{
 		//second set of stars
 		for(int i=numStars/2+1;i<numStars;i++){
 			
+			//sets distance, andgle, and mass
 			rdistance = (double)(Math.random()*5.2e20);
 			rangle = (double)(Math.random()*2*(Math.PI));
 			massRan = (double)(Math.random()*maxMassRan);
 			
+			//magnitude and angle
 			double vm = Math.sqrt(G*(stars[numStars/2].mass)/rdistance);
 			 double theta = Math.PI/2+rangle;
 			 
