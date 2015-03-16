@@ -128,7 +128,9 @@ public class Star {
 				}
 				
 				//add the force of this mass to the total force
-				force.addVector(magnitude, angle);
+				if(distance < 1e7){
+					force.addVector(magnitude, angle);
+				}
 				
 				//debug = String.format("Fg orig angle %f magnitude %e angle %f x %e y %e", origangle,magnitude,angle,force.xp,force.yp);
 				debug = String.format("x %e y %e", position.xp,position.yp);

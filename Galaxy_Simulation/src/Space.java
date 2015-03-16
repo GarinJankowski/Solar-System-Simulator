@@ -5,15 +5,18 @@ import acm.graphics.GRect;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
 import acm.util.RandomGenerator;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JSlider;
 /**
  * 
@@ -107,9 +110,11 @@ public class Space extends GraphicsProgram{
 		add(new JButton("Stop"),SOUTH);
 		add(new JButton("Run"),SOUTH);
 		add(new JButton("New Solar System"),SOUTH);
+		add(new JButton("Planets XY"),SOUTH);
 		add(new JButton("Single Planet Orbit"),SOUTH);
 		add(new JButton("New Galaxy"),SOUTH);
 		add(new JButton("Clear"),SOUTH);
+		
 		
 		//checkboxes
 		add(info,EAST);
@@ -131,21 +136,34 @@ public class Space extends GraphicsProgram{
 		planetiv.setPaintTicks(true);
 		planetiv.setPaintLabels(true);
 		planetiv.setName("Magnitude");
-		add(planetiv,NORTH);
+		
+		JPanel planetivpanel = new JPanel();
+		planetivpanel.setLayout(new BoxLayout(planetivpanel, BoxLayout.Y_AXIS));
+		
+		planetivpanel.add(new Label("Planet Initial Velocity"));
+		planetivpanel.add(stariv);
+		
+		//add(planetivpanel,NORTH);
 		
 		planetia.setPreferredSize(new Dimension(400,50));
 		planetia.setMajorTickSpacing(15);
 		planetia.setPaintTicks(true);
 		planetia.setPaintLabels(true);
 		planetia.setName("Angle");
-		add(planetia,NORTH);
+		//add(planetia,NORTH);
 		
 		stariv.setPreferredSize(new Dimension(400,50));
 		stariv.setMajorTickSpacing(1);
 		stariv.setPaintTicks(true);
 		stariv.setPaintLabels(true);
-		stariv.setName("Star Velocity");
-		add(stariv,NORTH);
+		
+		JPanel starivpanel = new JPanel();
+		starivpanel.setLayout(new BoxLayout(starivpanel, BoxLayout.Y_AXIS));
+		
+		starivpanel.add(new Label("Star Initial Velocity"));
+		starivpanel.add(stariv);
+		
+		//add(starivpanel,NORTH);
 		
 		times.setPreferredSize(new Dimension(400,50));
 		times.setMajorTickSpacing(1);
@@ -159,6 +177,8 @@ public class Space extends GraphicsProgram{
 		ttable.put( new Integer(2), new JLabel("100") );
 		ttable.put( new Integer(1), new JLabel("10") );
 		times.setLabelTable(ttable);
+		
+		
 		
 		addActionListeners();
 		
@@ -217,6 +237,13 @@ public class Space extends GraphicsProgram{
 	    	  removeAll();
 	    	  undisplayAll();
 	    	  initializeRandomSS();
+	    	  stars[0].circle.sendToFront();
+	      }
+	      else if(command.equals("Planets XY")){
+	    	  go = false;
+	    	  removeAll();
+	    	  undisplayAll();
+	    	  initializeXYSS();
 	    	  stars[0].circle.sendToFront();
 	      }
 	      else if(command.equals("Single Planet Orbit")){
@@ -418,6 +445,63 @@ public class Space extends GraphicsProgram{
 			}
 			rangle = (double)(Math.random()*2*(Math.PI));
 			massRan = (double)(Math.random()*2e27)+3.285e23;
+			
+			 gdx = rdistance*(Math.cos(rangle));
+			 gdy = rdistance*(Math.sin(rangle));
+			
+			 
+			 double vm = Math.sqrt(G*(stars[0].mass)/rdistance);
+			 double theta = Math.PI/2+rangle;
+			 
+			//setting initial velocity
+			 if(initV.isSelected()){
+			 	double vmd = vm/5;
+			 	double thetad = theta/5;
+			 
+			 	vm = vm+(Math.random()*vmd);
+			 	theta = theta+(Math.random()*thetad);
+			 }
+			 	
+			 double sxv = vm*Math.cos(theta);
+			 double syv = vm*Math.sin(theta);
+			 
+			//planets
+			stars[i].turnOn();
+			  stars[i].setPosition(maxpx/2 + gdx,maxpy/2 + gdy);
+			  stars[i].setVelocity(sxv,syv);
+		   	  stars[i].mass = massRan;
+		   	  stars[i].trueStar(this);
+		      stars[i].circle.setColor(Color.CYAN);
+		   	  add(stars[i].circle);
+		}
+	}
+	public void initializeXYSS(){
+		//changes number of stars in the array
+		final int numStars =  10;
+		int getVal = stariv.getValue();
+		maxpx = 2e10;
+		maxpy = 2e10;
+		deltaT =  Math.pow(10,times.getValue());
+		//maxMassRan = (2.1e30-2e30)/(numStars/2-1);
+		
+		//center star
+		stars[0].turnOn();
+		stars[0].setPosition(maxpx/2,maxpy/2);
+		stars[0].setVelocity(1*Math.pow(10,getVal),0);
+		stars[0].mass = 2e30;
+		stars[0].trueStar(this);
+		stars[0].circle.setColor(Color.YELLOW);
+		stars[0].circle.setSize(7, 7);
+		add(stars[0].circle);
+		
+		//surrounding planets
+		for(int i=1;i<numStars;i++){
+			rdistance = 1e9;
+			if(limit.isSelected()){
+				rdistance = 3.4e9+1e9;
+			}
+			rangle = 2*(Math.PI);
+			massRan = 2e27+3.285e23;
 			
 			 gdx = rdistance*(Math.cos(rangle));
 			 gdy = rdistance*(Math.sin(rangle));
