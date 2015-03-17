@@ -131,45 +131,49 @@ public class Space extends GraphicsProgram{
 		
 		//slider
 		
-		planetiv.setPreferredSize(new Dimension(400,50));
+		planetiv.setPreferredSize(new Dimension(200,50));
 		planetiv.setMajorTickSpacing(15);
 		planetiv.setPaintTicks(true);
 		planetiv.setPaintLabels(true);
-		planetiv.setName("Magnitude");
 		
 		JPanel planetivpanel = new JPanel();
 		planetivpanel.setLayout(new BoxLayout(planetivpanel, BoxLayout.Y_AXIS));
-		
 		planetivpanel.add(new Label("Planet Initial Velocity"));
-		planetivpanel.add(stariv);
+		planetivpanel.add(planetiv);		
+		add(planetivpanel,NORTH);
 		
-		//add(planetivpanel,NORTH);
-		
-		planetia.setPreferredSize(new Dimension(400,50));
+		planetia.setPreferredSize(new Dimension(200,50));
 		planetia.setMajorTickSpacing(15);
 		planetia.setPaintTicks(true);
 		planetia.setPaintLabels(true);
-		planetia.setName("Angle");
-		//add(planetia,NORTH);
 		
-		stariv.setPreferredSize(new Dimension(400,50));
+		JPanel planetiapanel = new JPanel();
+		planetiapanel.setLayout(new BoxLayout(planetiapanel, BoxLayout.Y_AXIS));		
+		planetiapanel.add(new Label("Planet Initial Angle"));
+		planetiapanel.add(planetia);		
+		add(planetiapanel,NORTH);
+		
+		stariv.setPreferredSize(new Dimension(200,50));
 		stariv.setMajorTickSpacing(1);
 		stariv.setPaintTicks(true);
 		stariv.setPaintLabels(true);
 		
 		JPanel starivpanel = new JPanel();
-		starivpanel.setLayout(new BoxLayout(starivpanel, BoxLayout.Y_AXIS));
-		
+		starivpanel.setLayout(new BoxLayout(starivpanel, BoxLayout.Y_AXIS));		
 		starivpanel.add(new Label("Star Initial Velocity"));
-		starivpanel.add(stariv);
+		starivpanel.add(stariv);	
+		add(starivpanel,NORTH);
 		
-		//add(starivpanel,NORTH);
-		
-		times.setPreferredSize(new Dimension(400,50));
+		times.setPreferredSize(new Dimension(50,400));
 		times.setMajorTickSpacing(1);
 		times.setPaintTicks(true);
-		times.setPaintLabels(true);		
-		add(times,WEST);
+		times.setPaintLabels(true);
+		
+		JPanel timespanel = new JPanel();
+		timespanel.setLayout(new BoxLayout(timespanel, BoxLayout.Y_AXIS));		
+		timespanel.add(new Label("Time Scale"));
+		timespanel.add(times);	
+		add(timespanel,WEST);
 		
 		Hashtable ttable = new Hashtable();
 		ttable.put( new Integer(4), new JLabel("10000") );
@@ -477,7 +481,7 @@ public class Space extends GraphicsProgram{
 	}
 	public void initializeXYSS(){
 		//changes number of stars in the array
-		final int numStars =  10;
+		final int numStars =  6;
 		int getVal = stariv.getValue();
 		maxpx = 2e10;
 		maxpy = 2e10;
@@ -530,6 +534,11 @@ public class Space extends GraphicsProgram{
 		   	  stars[i].trueStar(this);
 		      stars[i].circle.setColor(Color.CYAN);
 		   	  add(stars[i].circle);
+		   	  
+		   	  stars[1].setVelocity(sxv-(sxv/10)*3,syv-(syv/10)*3);
+		   	  stars[2].setVelocity(sxv-(sxv/10)*1.5,syv-(syv/10)*1.5);
+		   	  stars[4].setVelocity(sxv+(sxv/10)*1.5,syv+(syv/10)*1.5);
+		   	  stars[5].setVelocity(sxv+(sxv/10)*3,syv+(syv/10)*3);
 		}
 	}
 	//main loop

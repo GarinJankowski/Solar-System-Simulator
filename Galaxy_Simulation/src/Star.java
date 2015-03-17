@@ -49,18 +49,24 @@ public class Star {
 		position.yp = yp;
 	}
 	//converts real physics into computer and moves the image to the object's location
-	public void trueStar(Space space){
+	public void trueStar(Space space,Color color){
 		
 		double xc = (space.maxcx/space.maxpx)*position.xp;
 		double yc = (-space.maxcy/space.maxpy)*position.yp + space.maxcy;
 		
 		if(space.track.isSelected()){
 			GOval trackcircle = new GOval(xc,yc,.5,.5);
-			trackcircle.setColor(Color.red);
+			trackcircle.setColor(color);
 			space.add(trackcircle);
 		}
 		
 		circle.setLocation(xc,yc);
+	}
+	public void trueStar(Space space){
+		this.trueStar(space,Color.red);
+	}
+	public void trueStar(Space space,int index){
+		
 	}
 	//psuedo-code
 	public void updateP(Space space) {
@@ -128,7 +134,7 @@ public class Star {
 				}
 				
 				//add the force of this mass to the total force
-				if(distance < 1e7){
+				if(i==0){
 					force.addVector(magnitude, angle);
 				}
 				
