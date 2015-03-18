@@ -23,6 +23,7 @@ public class Star {
 	double vcsq;
 	String debug;
 	GLabel label;
+	Color trackc;
 	
 	//default star
 	public Star(int x,int y){
@@ -66,7 +67,37 @@ public class Star {
 		this.trueStar(space,Color.red);
 	}
 	public void trueStar(Space space,int index){
-		
+		if(index==0){
+			trackc = Color.cyan;
+		}
+		else if(index==1){
+			trackc = Color.red;
+		}
+		else if(index==2){
+			trackc = Color.white;
+		}
+		else if(index==3){
+			trackc = Color.green;
+		}
+		else if(index==4){
+			trackc = Color.magenta;
+		}
+		else if(index==5){
+			trackc = Color.lightGray;
+		}
+		else if(index==6){
+			trackc = Color.orange;
+		}
+		else if(index==7){
+			trackc = Color.yellow;
+		}
+		else if(index==8){
+			trackc = Color.pink;
+		}
+		else if(index==9){
+			trackc = Color.blue;
+		}
+		this.trueStar(space, trackc);
 	}
 	//psuedo-code
 	public void updateP(Space space) {

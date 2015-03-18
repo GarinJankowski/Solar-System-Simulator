@@ -115,6 +115,9 @@ public class Space extends GraphicsProgram{
 		add(new JButton("New Galaxy"),SOUTH);
 		add(new JButton("Clear"),SOUTH);
 		
+		add(new JButton("Add Initial Velocity"),EAST);
+		add(new JButton("Add Initial Angle"),EAST);
+		
 		
 		//checkboxes
 		add(info,EAST);
@@ -269,7 +272,7 @@ public class Space extends GraphicsProgram{
 	    	  removeAll();
 	    	  undisplayAll();
 	    	  
-	      }  
+	      }
 	}
 	
 	private void undisplayAll() {
@@ -306,7 +309,7 @@ public class Space extends GraphicsProgram{
 		stars[0].setPosition(maxpx/2, maxpy/2);
 		stars[0].setVelocity(1*Math.pow(10,getVal),0);
 		stars[0].mass = 2e30;
-		stars[0].trueStar(this);
+		stars[0].trueStar(this,0);
 		stars[0].circle.setColor(Color.YELLOW);
 		add(stars[0].circle);
 		
@@ -330,7 +333,7 @@ public class Space extends GraphicsProgram{
 		//stars[1].setVelocity(-0.7e4,0.4e4);
 		//stars[1].setVelocity(-0.4e4,0.3e4);
 		stars[1].mass = 6e24;
-		stars[1].trueStar(this);
+		stars[1].trueStar(this,1);
 		stars[1].circle.setColor(Color.CYAN);
 		add(stars[1].circle);
 		
@@ -353,7 +356,7 @@ public class Space extends GraphicsProgram{
 		stars[0].setPosition(g1x,g1y);
 		stars[0].setVelocity(0,0);
 		stars[0].mass = 9e20;
-		stars[0].trueStar(this);
+		stars[0].trueStar(this,0);
 		stars[0].circle.setColor(Color.MAGENTA);
 		add(stars[0].circle);
 		
@@ -362,7 +365,7 @@ public class Space extends GraphicsProgram{
 		stars[numStars/2].setPosition(g2x,g2y);
 		stars[numStars/2].setVelocity(0,0);
 		stars[numStars/2].mass = 9e20;
-		stars[numStars/2].trueStar(this);
+		stars[numStars/2].trueStar(this,numStars/2);
 		stars[numStars/2].circle.setColor(Color.RED);
 		add(stars[numStars/2].circle);
 		
@@ -389,7 +392,7 @@ public class Space extends GraphicsProgram{
 		    stars[i].setPosition(g1x + gdx,g1y + gdy);
 		    stars[i].setVelocity(sxv,syv);
 	    	stars[i].mass = massRan;
-	    	stars[i].trueStar(this);
+	    	stars[i].trueStar(this,i);
 	   	 	stars[i].circle.setColor(Color.CYAN);
 		   	  add(stars[i].circle);
 	  	}
@@ -415,7 +418,7 @@ public class Space extends GraphicsProgram{
 			  stars[i].setPosition(g2x + gdx,g2y + gdy);
 			  stars[i].setVelocity(sxv,syv);
 		   	  stars[i].mass = massRan;
-		   	  stars[i].trueStar(this);
+		   	  stars[i].trueStar(this,i);
 		      stars[i].circle.setColor(Color.ORANGE);
 		   	  add(stars[i].circle);
 	  	}
@@ -435,7 +438,7 @@ public class Space extends GraphicsProgram{
 		stars[0].setPosition(maxpx/2,maxpy/2);
 		stars[0].setVelocity(1*Math.pow(10,getVal),0);
 		stars[0].mass = 2e30;
-		stars[0].trueStar(this);
+		stars[0].trueStar(this,0);
 		stars[0].circle.setColor(Color.YELLOW);
 		stars[0].circle.setSize(7, 7);
 		add(stars[0].circle);
@@ -474,7 +477,7 @@ public class Space extends GraphicsProgram{
 			  stars[i].setPosition(maxpx/2 + gdx,maxpy/2 + gdy);
 			  stars[i].setVelocity(sxv,syv);
 		   	  stars[i].mass = massRan;
-		   	  stars[i].trueStar(this);
+		   	  stars[i].trueStar(this,i);
 		      stars[i].circle.setColor(Color.CYAN);
 		   	  add(stars[i].circle);
 		}
@@ -493,7 +496,7 @@ public class Space extends GraphicsProgram{
 		stars[0].setPosition(maxpx/2,maxpy/2);
 		stars[0].setVelocity(1*Math.pow(10,getVal),0);
 		stars[0].mass = 2e30;
-		stars[0].trueStar(this);
+		stars[0].trueStar(this,0);
 		stars[0].circle.setColor(Color.YELLOW);
 		stars[0].circle.setSize(7, 7);
 		add(stars[0].circle);
@@ -513,6 +516,18 @@ public class Space extends GraphicsProgram{
 			 
 			 double vm = Math.sqrt(G*(stars[0].mass)/rdistance);
 			 double theta = Math.PI/2+rangle;
+			 if(i==1){
+				 theta = theta*(1+(-30/100));
+			 }
+			 else if(i==2){
+				 theta = theta*(1+(-15/100));
+			 }
+			 else if(i==4){
+				 theta = theta*(1+(15/100));
+			 }
+			 else if(i==5){
+				 theta = theta*(1+(15/100));
+			 }
 			 
 			//setting initial velocity
 			 if(initV.isSelected()){
@@ -531,7 +546,7 @@ public class Space extends GraphicsProgram{
 			  stars[i].setPosition(maxpx/2 + gdx,maxpy/2 + gdy);
 			  stars[i].setVelocity(sxv,syv);
 		   	  stars[i].mass = massRan;
-		   	  stars[i].trueStar(this);
+		   	  stars[i].trueStar(this,i);
 		      stars[i].circle.setColor(Color.CYAN);
 		   	  add(stars[i].circle);
 		   	  
@@ -552,7 +567,7 @@ public class Space extends GraphicsProgram{
 				 for(int i=0;i<numStars;i++){
 					 if(stars[i].display == true){
 						 add(stars[i].circle);
-						 stars[i].trueStar(this);
+						 stars[i].trueStar(this,i);
 						 stars[i].updateP(this);
 						 time += deltaT;
 						 //sets info
