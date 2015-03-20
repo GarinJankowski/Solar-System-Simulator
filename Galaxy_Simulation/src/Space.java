@@ -65,17 +65,38 @@ public class Space extends GraphicsProgram{
 	GOval ssm;
 	//maximum massRan
 	double maxMassRan = (1.2e42-8.6e36)/(numStars/2-1);
+	//titles
+	GLabel lss = new GLabel("Solar System");
+	GLabel lxy = new GLabel("Planets XY");
+	GLabel lspo = new GLabel("Single Planet Orbit");
+	GLabel lg = new GLabel("Galaxy");
 	//debug string object
 	GLabel debugLabel1 = new GLabel("debug");
 	GLabel debugLabel2 = new GLabel("debug");
 	GLabel debugLabel3 = new GLabel("debug");
 	GLabel debugLabel4 = new GLabel("debug");
 	GLabel debugLabel5 = new GLabel("debug");
+	//initial velocities and angles of planets xy
+	GLabel vn30= new GLabel("-30%");
+	GLabel vn15= new GLabel("-15%");
+	GLabel v0= new GLabel("+0% (circular orbit)");
+	GLabel v15= new GLabel("+15%");
+	GLabel v30= new GLabel("+30%");
+	GLabel tiv= new GLabel("Initial Velocity Added");
+	
+	GLabel an15= new GLabel("-15%");
+	GLabel an75= new GLabel("-7.5%");
+	GLabel a0= new GLabel("+0% (circular orbit)");
+	GLabel a75= new GLabel("+7.5%");
+	GLabel a15= new GLabel("+15%");
+	GLabel tia= new GLabel("Initial Angle Added");
 	//speed of light
 	public double c = 3e8;
 	//cycle controller
 	boolean cycle = false;
 	//toggle buttons
+	JCheckBox initV2 = new JCheckBox("Initial Velocity");
+	JCheckBox initA = new JCheckBox("Initial Angle");
 	JCheckBox info = new JCheckBox("Info");
 	JCheckBox track = new JCheckBox("Tracker");
 	JCheckBox initV = new JCheckBox("Randomize Initial Velocity");
@@ -104,7 +125,7 @@ public class Space extends GraphicsProgram{
 	public void init(){
 		setTitle("Solar System Simulator");
 		//background color
-		setBackground(Color.BLACK);
+		setBackground(Color.WHITE);
 		//buttons
 		add(new JButton("Start"),SOUTH);
 		add(new JButton("Stop"),SOUTH);
@@ -115,13 +136,15 @@ public class Space extends GraphicsProgram{
 		add(new JButton("New Galaxy"),SOUTH);
 		add(new JButton("Clear"),SOUTH);
 		
-		add(new JButton("Add Initial Velocity"),EAST);
-		add(new JButton("Add Initial Angle"),EAST);
-		
-		
 		//checkboxes
 		add(info,EAST);
 		info.setSelected(false);
+		
+		add(initV2,EAST);
+		initV2.setSelected(false);
+		
+		add(initA,EAST);
+		initA.setSelected(false);
 
 		add(track,EAST);
 		track.setSelected(false);
@@ -218,12 +241,13 @@ public class Space extends GraphicsProgram{
 	//code for buttons
 	public void actionPerformed(ActionEvent e) {
 	      String command = e.getActionCommand();
-	      if(command.equals("Start")){	    	  
+	      if(command.equals("Start")){
 	    	  go = true;
+	    	  cycle = true;
 	      }
-	      else if(command.equals("Stop")){
+	      else if(command.equals("Stop")){  	 
 	    	  go = false;
-	    	  
+	    	  cycle = false;
 	      }
 	      else if(command.equals("Run")){
 	    	  go = false;
@@ -239,31 +263,123 @@ public class Space extends GraphicsProgram{
 	    	  debugLabel5.setFont("Helvetica-24");
 	    	  debugLabel5.setColor(Color.YELLOW);
 	      }
-	      else if(command.equals("New Solar System")){
+	      else if(command.equals("New Solar System")){ 	  
 	    	  go = false;
 	    	  removeAll();
 	    	  undisplayAll();
+	    	  cycle = false;
 	    	  initializeRandomSS();
+	    	  lss.setColor(Color.white);
+	    	  lss.setFont("Helvetica-24");
+	    	  add(lss,400,50);		
 	    	  stars[0].circle.sendToFront();
 	      }
-	      else if(command.equals("Planets XY")){
+	      else if(command.equals("Planets XY")){    	  
 	    	  go = false;
 	    	  removeAll();
 	    	  undisplayAll();
+	    	  cycle = false;
 	    	  initializeXYSS();
+	    	  lxy.setColor(Color.BLACK);
+	    	  lxy.setFont("Helvetica-24");
+	    	  tiv.setFont("Helvetica-16");
+	    	  v30.setFont("Helvetica-16");
+	    	  v15.setFont("Helvetica-16");
+	    	  v0.setFont("Helvetica-16");
+	    	  vn15.setFont("Helvetica-16");
+	    	  vn30.setFont("Helvetica-16");
+	    	  tia.setFont("Helvetica-16");
+	    	  a15.setFont("Helvetica-16");
+	    	  a75.setFont("Helvetica-16");
+	    	  a0.setFont("Helvetica-16");
+	    	  an15.setFont("Helvetica-16");
+	    	  an75.setFont("Helvetica-16");
+	    	  add(lxy,300,50);
 	    	  stars[0].circle.sendToFront();
+	    	  //initial velocity and angle labels for planets xy
+	    	  if(initV2.isSelected()){
+	    		  tiv.setColor(Color.black);
+	    		  add(tiv,1000,50);
+	    		  v30.setColor(Color.gray);
+	    		  add(v30,1000,100);
+	    		  v15.setColor(Color.magenta);
+	    		  add(v15,1000,125);
+	    		  v0.setColor(Color.blue);
+	    		  add(v0,1000,150);
+	    		  vn15.setColor(Color.black);
+	    		  add(vn15,1000,175);
+	    		  vn30.setColor(Color.red);
+	    		  add(vn30,1000,200);
+	    		  
+	    		  lxy.setLabel("Modifying Magnitude of Planet's Initial Velocity (same angle)");
+	    	  }
+	    	  if(initA.isSelected()){
+	    		  tia.setColor(Color.black);
+	    		  add(tia,1200,50);
+	    		  an15.setColor(Color.gray);
+	    		  add(an15,1200,100);
+	    		  an75.setColor(Color.magenta);
+	    		  add(an75,1200,125);
+	    		  a0.setColor(Color.blue);
+	    		  add(a0,1200,150);
+	    		  a75.setColor(Color.black);
+	    		  add(a75,1200,175);
+	    		  a15.setColor(Color.red);
+	    		  add(a15,1200,200);
+	    		  
+	    		  lxy.setLabel("Modifying Angle of Planet's Initial Velocity (same magnitude)");
+	    	  }
+	    	  if(initV2.isSelected()&&initA.isSelected()){
+	    		  tiv.setColor(Color.black);
+	    		  add(tiv,1000,50);
+	    		  v30.setColor(Color.gray);
+	    		  add(v30,1000,100);
+	    		  v15.setColor(Color.magenta);
+	    		  add(v15,1000,125);
+	    		  v0.setColor(Color.blue);
+	    		  add(v0,1000,150);
+	    		  vn15.setColor(Color.black);
+	    		  add(vn15,1000,175);
+	    		  vn30.setColor(Color.red);
+	    		  add(vn30,1000,200);
+	    		  
+	    		  tia.setColor(Color.black);
+	    		  add(tia,1200,50);
+	    		  an15.setColor(Color.gray);
+	    		  add(an15,1200,100);
+	    		  an75.setColor(Color.magenta);
+	    		  add(an75,1200,125);
+	    		  a0.setColor(Color.blue);
+	    		  add(a0,1200,150);
+	    		  a75.setColor(Color.black);
+	    		  add(a75,1200,175);
+	    		  a15.setColor(Color.red);
+	    		  add(a15,1200,200);
+	    		  
+	    		  lxy.setLocation(200,50);
+	    		  lxy.setLabel("Modifying Planet Initial Velocity and Angle");
+	    	  }
 	      }
-	      else if(command.equals("Single Planet Orbit")){
+	    	 
+	      else if(command.equals("Single Planet Orbit")){   	  
 	    	  go = false;
 	    	  removeAll();
 	    	  undisplayAll();
+	    	  cycle = false;
 	    	  initialize();
+	    	  lspo.setColor(Color.white);
+	    	  lspo.setFont("Helvetica-24");
+	    	  add(lspo,300,50);
 	      }
-	      else if(command.equals("New Galaxy")){
+	      else if(command.equals("New Galaxy")){    	 
 	    	  go = false;
 	    	  removeAll();
 	    	  undisplayAll();
+	    	  cycle = false;
 	    	  initializeRandomG();
+	    	  lg.setColor(Color.white);
+	    	  lg.setFont("Helvetica-24");
+	    	  add(lg,400,50);
 	    	  stars[0].circle.sendToFront();
 	    	  stars[numStars/2].circle.sendToFront();
 	      }      
@@ -271,6 +387,7 @@ public class Space extends GraphicsProgram{
 	    	  go = false;
 	    	  removeAll();
 	    	  undisplayAll();
+	    	  cycle = false;
 	    	  
 	      }
 	}
@@ -299,9 +416,7 @@ public class Space extends GraphicsProgram{
 		//calculate xa nd y from distance and angle
 		gdx = rdistance*(Math.cos(rangle));
 		gdy = rdistance*(Math.sin(rangle));
-		
-		
-		
+	
 		//time
 		time = 0;
 		//sun
@@ -497,13 +612,13 @@ public class Space extends GraphicsProgram{
 		stars[0].setVelocity(1*Math.pow(10,getVal),0);
 		stars[0].mass = 2e30;
 		stars[0].trueStar(this,0);
-		stars[0].circle.setColor(Color.YELLOW);
+		stars[0].circle.setColor(Color.BLUE);
 		stars[0].circle.setSize(7, 7);
 		add(stars[0].circle);
 		
 		//surrounding planets
 		for(int i=1;i<numStars;i++){
-			rdistance = 1e9;
+			rdistance = 1.8e9;
 			if(limit.isSelected()){
 				rdistance = 3.4e9+1e9;
 			}
@@ -516,17 +631,20 @@ public class Space extends GraphicsProgram{
 			 
 			 double vm = Math.sqrt(G*(stars[0].mass)/rdistance);
 			 double theta = Math.PI/2+rangle;
-			 if(i==1){
-				 theta = theta*(1+(-30/100));
-			 }
-			 else if(i==2){
-				 theta = theta*(1+(-15/100));
-			 }
-			 else if(i==4){
-				 theta = theta*(1+(15/100));
-			 }
-			 else if(i==5){
-				 theta = theta*(1+(15/100));
+			
+			 if(initA.isSelected()){
+			 	if(i==1){
+			 		theta = theta*(1+(-15.0/100));
+			 	}
+			 	else if(i==2){
+			 		theta = theta*(1+(-7.5/100));
+			 	}
+			 	else if(i==4){
+			 		theta = theta*(1+(7.5/100));
+			 	}
+			 	else if(i==5){
+			 		theta = theta*(1+(15.0/100));
+			 	}
 			 }
 			 
 			//setting initial velocity
@@ -550,10 +668,12 @@ public class Space extends GraphicsProgram{
 		      stars[i].circle.setColor(Color.CYAN);
 		   	  add(stars[i].circle);
 		   	  
-		   	  stars[1].setVelocity(sxv-(sxv/10)*3,syv-(syv/10)*3);
-		   	  stars[2].setVelocity(sxv-(sxv/10)*1.5,syv-(syv/10)*1.5);
-		   	  stars[4].setVelocity(sxv+(sxv/10)*1.5,syv+(syv/10)*1.5);
-		   	  stars[5].setVelocity(sxv+(sxv/10)*3,syv+(syv/10)*3);
+		   	 if(initV2.isSelected()){
+		   	  	stars[1].setVelocity(sxv-(sxv/10)*3,syv-(syv/10)*3);
+		   	  	stars[2].setVelocity(sxv-(sxv/10)*1.5,syv-(syv/10)*1.5);
+		   	  	stars[4].setVelocity(sxv+(sxv/10)*1.5,syv+(syv/10)*1.5);
+		   	  	stars[5].setVelocity(sxv+(sxv/10)*3,syv+(syv/10)*3);
+		   	 }
 		}
 	}
 	//main loop
