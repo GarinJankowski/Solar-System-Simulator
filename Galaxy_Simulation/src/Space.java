@@ -95,12 +95,12 @@ public class Space extends GraphicsProgram{
 	//cycle controller
 	boolean cycle = false;
 	//toggle buttons
-	JCheckBox initV2 = new JCheckBox("Initial Velocity");
-	JCheckBox initA = new JCheckBox("Initial Angle");
-	JCheckBox info = new JCheckBox("Info");
-	JCheckBox track = new JCheckBox("Tracker");
+	JCheckBox initV2 = new JCheckBox("Modify Initial Velocity");
+	JCheckBox initA = new JCheckBox("Modify Initial Angle");
+	JCheckBox info = new JCheckBox("Show positions");
+	JCheckBox track = new JCheckBox("Track Planet Orbits");
 	JCheckBox initV = new JCheckBox("Randomize Initial Velocity");
-	JCheckBox limit = new JCheckBox("Limit Planet Position");
+	JCheckBox limit = new JCheckBox("Increase Planet Distance from Sun");
 	//sliders
 	JSlider times = new JSlider(JSlider.VERTICAL,1,4,2);
 	JSlider planetiv = new JSlider(JSlider.HORIZONTAL,-30,30,0);
@@ -125,7 +125,7 @@ public class Space extends GraphicsProgram{
 	public void init(){
 		setTitle("Solar System Simulator");
 		//background color
-		setBackground(Color.WHITE);
+		setBackground(Color.BLACK);
 		//buttons
 		add(new JButton("Start"),SOUTH);
 		add(new JButton("Stop"),SOUTH);
@@ -298,15 +298,15 @@ public class Space extends GraphicsProgram{
 	    	  stars[0].circle.sendToFront();
 	    	  //initial velocity and angle labels for planets xy
 	    	  if(initV2.isSelected()){
-	    		  tiv.setColor(Color.black);
+	    		  tiv.setColor(Color.white);
 	    		  add(tiv,1000,50);
-	    		  v30.setColor(Color.gray);
+	    		  v30.setColor(Color.lightGray);
 	    		  add(v30,1000,100);
 	    		  v15.setColor(Color.magenta);
 	    		  add(v15,1000,125);
-	    		  v0.setColor(Color.blue);
+	    		  v0.setColor(Color.green);
 	    		  add(v0,1000,150);
-	    		  vn15.setColor(Color.black);
+	    		  vn15.setColor(Color.white);
 	    		  add(vn15,1000,175);
 	    		  vn30.setColor(Color.red);
 	    		  add(vn30,1000,200);
@@ -314,15 +314,15 @@ public class Space extends GraphicsProgram{
 	    		  lxy.setLabel("Modifying Magnitude of Planet's Initial Velocity (same angle)");
 	    	  }
 	    	  if(initA.isSelected()){
-	    		  tia.setColor(Color.black);
+	    		  tia.setColor(Color.white);
 	    		  add(tia,1200,50);
-	    		  an15.setColor(Color.gray);
+	    		  an15.setColor(Color.lightGray);
 	    		  add(an15,1200,100);
 	    		  an75.setColor(Color.magenta);
 	    		  add(an75,1200,125);
-	    		  a0.setColor(Color.blue);
+	    		  a0.setColor(Color.green);
 	    		  add(a0,1200,150);
-	    		  a75.setColor(Color.black);
+	    		  a75.setColor(Color.white);
 	    		  add(a75,1200,175);
 	    		  a15.setColor(Color.red);
 	    		  add(a15,1200,200);
@@ -330,28 +330,28 @@ public class Space extends GraphicsProgram{
 	    		  lxy.setLabel("Modifying Angle of Planet's Initial Velocity (same magnitude)");
 	    	  }
 	    	  if(initV2.isSelected()&&initA.isSelected()){
-	    		  tiv.setColor(Color.black);
+	    		  tiv.setColor(Color.white);
 	    		  add(tiv,1000,50);
-	    		  v30.setColor(Color.gray);
+	    		  v30.setColor(Color.lightGray);
 	    		  add(v30,1000,100);
 	    		  v15.setColor(Color.magenta);
 	    		  add(v15,1000,125);
-	    		  v0.setColor(Color.blue);
+	    		  v0.setColor(Color.green);
 	    		  add(v0,1000,150);
-	    		  vn15.setColor(Color.black);
+	    		  vn15.setColor(Color.white);
 	    		  add(vn15,1000,175);
 	    		  vn30.setColor(Color.red);
 	    		  add(vn30,1000,200);
 	    		  
-	    		  tia.setColor(Color.black);
+	    		  tia.setColor(Color.white);
 	    		  add(tia,1200,50);
-	    		  an15.setColor(Color.gray);
+	    		  an15.setColor(Color.lightGray);
 	    		  add(an15,1200,100);
 	    		  an75.setColor(Color.magenta);
 	    		  add(an75,1200,125);
-	    		  a0.setColor(Color.blue);
+	    		  a0.setColor(Color.green);
 	    		  add(a0,1200,150);
-	    		  a75.setColor(Color.black);
+	    		  a75.setColor(Color.white);
 	    		  add(a75,1200,175);
 	    		  a15.setColor(Color.red);
 	    		  add(a15,1200,200);
@@ -612,7 +612,7 @@ public class Space extends GraphicsProgram{
 		stars[0].setVelocity(1*Math.pow(10,getVal),0);
 		stars[0].mass = 2e30;
 		stars[0].trueStar(this,0);
-		stars[0].circle.setColor(Color.BLUE);
+		stars[0].circle.setColor(Color.YELLOW);
 		stars[0].circle.setSize(7, 7);
 		add(stars[0].circle);
 		
